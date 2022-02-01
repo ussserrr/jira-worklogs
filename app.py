@@ -13,7 +13,8 @@ import jira.search
 import jira.worklog
 
 
-IS_PREV_MONTH = os.environ.get('IS_PREV_MONTH', default=True)
+IS_PREV_MONTH = os.environ.get('IS_PREV_MONTH', default='1')
+IS_PREV_MONTH = True if IS_PREV_MONTH.lower() in ['1', 'y', 'yes', 'true'] else False
 
 MONTHS_BACKWARD_OFFSET = -1
 MONTH_START = arrow.now().shift(months=MONTHS_BACKWARD_OFFSET).floor('month')\
