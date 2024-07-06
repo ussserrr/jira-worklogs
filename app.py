@@ -1,4 +1,3 @@
-import datetime
 import os
 from pathlib import Path
 
@@ -35,16 +34,17 @@ def main():
                 f"<a href=\"{jira.URL + '/browse/' + issue['key']}\">{issue['key']}</a>",
                 issue['summary'],
                 issue['status'],
-                datetime.timedelta(seconds=issue['timeSpentSeconds'])
+                issue['timeSpentSeconds'] / 60 / 60
             ])
 
     total_time_spent_seconds = 0
     for issue in issues:
         total_time_spent_seconds += issue['timeSpentSeconds']
-    total_working_days = total_time_spent_seconds / 60 / 60 / 8
+    total_hours = total_time_spent_seconds / 60 / 60
+    total_working_days = total_hours / 8
 
     print('========================================')
-    print(f"Total in {MONTH_START.format('MMMM')}: {total_working_days} working days")
+    print(f"Total in {MONTH_START.format('MMMM')}: {total_hours} working hours")
 
     html_content = f"""<!DOCTYPE html>
     <html lang="ru">
@@ -58,7 +58,7 @@ def main():
                 (согласно данным <a href="{jira.URL}">{jira.HOST}</a>)</p>
             {table.get_html_string(format=True)}
             <p><b>Всего:</b> {total_working_days} рабочих дней
-                ({datetime.timedelta(seconds=total_time_spent_seconds)} часов чистого времени).</p>
+                ({total_hours} часов чистого времени).</p>
             <p><b>Отчёт сформирован:</b> {arrow.now().format(locale='ru')}</p>
         </body>
     </html>"""
